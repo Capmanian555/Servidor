@@ -1,0 +1,70 @@
+:root {
+  --verde: #198754;
+  --verde-medio: #8fd19e;
+  --verde-claro: #d1e7dd;
+  --gris: #6c757d;
+  --texto: #212529;
+  --fondo: #f8f9fa;
+  --borde: #dee2e6;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; color: var(--texto); background: var(--fondo); line-height: 1.5; }
+.cabecera { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .5rem;
+  padding: .75rem 1.5rem; background: #fff; border-bottom: 1px solid var(--borde); }
+.cabecera nav a { margin-right: 1rem; font-weight: 600; color: var(--verde); text-decoration: none; }
+.cabecera a:hover { text-decoration: underline; }
+.pagina { max-width: 860px; margin: 0 auto; padding: 1.5rem; }
+section { background: #fff; border: 1px solid var(--borde); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+h1 { margin-top: 0; }
+h2 { margin-top: 0; font-size: 1.2rem; border-bottom: 2px solid var(--verde); padding-bottom: .25rem; }
+.titular { font-size: 1.15rem; color: var(--gris); margin-top: -.5rem; }
+.consejo { font-size: .9rem; color: var(--gris); }
+ul.lista { list-style: none; padding: 0; margin: 0; }
+ul.lista li { margin-bottom: .5rem; }
+
+/* Niveles de habilidades e idiomas (Hito 1) */
+.nivel { display: inline-block; padding: .25rem .75rem; border-radius: 999px; font-weight: 600; }
+.nivel-alto  { background: #198754; color: #ffffff; }
+.nivel-medio { background: #8fd19e; color: #212529; }
+.nivel-bajo  { background: #d1e7dd; color: #212529; }
+
+/* Portfolio */
+.filtro { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; }
+.filtro label { display: block; font-weight: 600; margin-bottom: .25rem; }
+input[type=text], input[type=number], input[type=email], select, textarea {
+  width: 100%; padding: .5rem; border: 1px solid var(--borde); border-radius: 6px; font: inherit; }
+.filtro .campo { min-width: 160px; }
+.boton, button { display: inline-block; padding: .5rem 1rem; border: 0; border-radius: 6px; background: var(--verde);
+  color: #fff; font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; }
+.boton-secundario { background: var(--gris); }
+.rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.tarjeta { background: #fff; border: 1px solid var(--borde); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+.tarjeta img { width: 100%; display: block; }
+.tarjeta .cuerpo { padding: 1rem; }
+.tarjeta h3 { margin: 0 0 .25rem; }
+.meta { color: var(--gris); font-size: .9rem; margin-bottom: .5rem; }
+.etiqueta { display: inline-block; padding: .15rem .6rem; border-radius: 4px; font-size: .8rem; font-weight: 600; color: #fff; }
+.etiqueta-verde { background: var(--verde); }
+.etiqueta-gris { background: var(--gris); }
+.tecnologia { display: inline-block; padding: .1rem .5rem; margin: 0 .25rem .25rem 0; border: 1px solid var(--borde);
+  border-radius: 4px; font-size: .8rem; background: var(--fondo); }
+.error { color: #b02a37; font-size: .9rem; display: block; }
+.aviso { background: #f8d7da; color: #842029; padding: .75rem 1rem; border-radius: 6px; margin-bottom: 1rem; font-weight: 600; }
+.aviso-limite { background: #fff3cd; color: #664d03; padding: .5rem 1rem; border-radius: 6px; }
+
+/* Editor */
+.campo-form { margin-bottom: .75rem; }
+.campo-form label { display: block; font-weight: 600; margin-bottom: .25rem; }
+.fila-proyecto { border: 1px dashed var(--borde); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+.acciones { display: flex; flex-wrap: wrap; gap: .75rem; }
+.presentacion { white-space: pre-line; }
+/* Boton de envio por defecto (para que Enter no pulse "Quitar"); no se ve pero sigue en el HTML */
+.oculto { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+@media print {
+  .cabecera, .no-imprimir { display: none; }
+  body { background: #fff; }
+  section { border: 0; padding: 0; }
+  /* Mantiene los colores de los niveles al imprimir */
+  .nivel { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

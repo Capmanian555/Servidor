@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${nombre} + ' · ' + #{nav.curriculum}">Curriculum</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+<header th:replace="~{fragments :: cabecera}"></header>
+
+<main class="pagina">
+
+    <!-- Perfil -->
+    <section>
+        <h1 th:text="${nombre}">Nombre</h1>
+        <p class="titular" th:text="#{cv.titular}">Titular</p>
+        <p th:text="#{cv.presentacion(${nombre})}">Presentacion</p>
+        <p th:if="${!#strings.isEmpty(ciudad)}" th:text="${ciudad}">Ciudad</p>
+        <p class="consejo no-imprimir" th:text="#{cv.imprimir}">Consejo de impresion</p>
+    </section>
+
+    <!-- Contacto: si no hay correo ni enlace, se oculta el apartado entero (tambien el titulo) -->
+    <section th:if="${!#strings.isEmpty(email) or !#strings.isEmpty(github)}">
+        <h2 th:text="#{cv.contacto}">Contacto</h2>
+        <ul class="lista">
+            <li th:if="${!#strings.isEmpty(email)}">
+                <strong th:text="#{cv.contacto.correo} + ':'">Correo:</strong>
+                <a th:href="'mailto:' + ${email}" th:text="${email}">correo</a>
+            </li>
+            <li th:if="${!#strings.isEmpty(github)}">
+                <strong th:text="#{cv.contacto.github} + ':'">GitHub:</strong>
+                <a th:href="${github}" th:text="${github}">enlace</a>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Formacion -->
+    <section>
+        <h2 th:text="#{cv.formacion}">Formacion</h2>
+        <ul class="lista">
+            <li th:each="e : ${formacion}">
+                <strong th:text="#{${e.nombreKey()}}">Estudios</strong><br>
+                <span th:text="${e.centro()}">Centro</span> ·
+                <!-- En curso o anno de finalizacion -->
+                <span th:if="${e.anioFin() == null}" th:text="#{cv.en-curso}">En curso</span>
+                <span th:unless="${e.anioFin() == null}" th:text="${e.anioFin()}">2024</span>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Experiencia -->
+    <section>
+        <h2 th:text="#{cv.experiencia}">Experiencia</h2>
+        <p th:if="${experiencia.length == 0}" th:text="#{cv.sin-experiencia}">En busca de mi primera experiencia</p>
+        <ul class="lista" th:unless="${experiencia.length == 0}">
+            <li th:each="x : ${experiencia}">
+                <strong th:text="${x.puesto()}">Puesto</strong><br>
+                <span th:text="${x.organizacion()} + ' · ' + ${x.periodo()}">Organizacion · periodo</span>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Habilidades: cada nivel tiene su th:case y su clase CSS -->
+    <section>
+        <h2 th:text="#{cv.habilidades}">Habilidades</h2>
+        <ul class="lista">
+            <li th:each="h : ${habilidades}" th:switch="${h.nivel()}">
+                <span th:case="'alto'" class="nivel nivel-alto" th:text="${h.nombre()} + ' — ' + #{nivel.alto}">Java — nivel alto</span>
+                <span th:case="'medio'" class="nivel nivel-medio" th:text="${h.nombre()} + ' — ' + #{nivel.medio}">Java — nivel medio</span>
+                <span th:case="'bajo'" class="nivel nivel-bajo" th:text="${h.nombre()} + ' — ' + #{nivel.bajo}">Java — nivel bajo</span>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Idiomas -->
+    <section>
+        <h2 th:text="#{cv.idiomas}">Idiomas</h2>
+        <ul class="lista">
+            <li th:each="i : ${idiomas}" th:switch="${i.nivel()}">
+                <span th:case="'alto'" class="nivel nivel-alto" th:text="#{${i.nombreKey()}} + ' — ' + #{nivel.alto}">Espannol — nivel alto</span>
+                <span th:case="'medio'" class="nivel nivel-medio" th:text="#{${i.nombreKey()}} + ' — ' + #{nivel.medio}">Ingles — nivel medio</span>
+                <span th:case="'bajo'" class="nivel nivel-bajo" th:text="#{${i.nombreKey()}} + ' — ' + #{nivel.bajo}">Idioma — nivel bajo</span>
+            </li>
+        </ul>
+    </section>
+</main>
+</body>
+</html>

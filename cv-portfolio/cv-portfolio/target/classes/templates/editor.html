@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{editor.titulo}">Editar portfolio</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+<header th:replace="~{fragments :: cabecera}"></header>
+
+<main class="pagina">
+    <h1 th:text="#{editor.titulo}">Editar mi portfolio</h1>
+
+    <form method="post" th:action="@{/portfolio/editar}" th:object="${form}">
+
+        <!-- Boton por defecto: si se pulsa Enter en un campo, se genera la vista previa (no se quita una fila) -->
+        <button type="submit" name="accion" value="vista" class="oculto" tabindex="-1" aria-hidden="true">OK</button>
+
+        <!-- Aviso general solo si hay errores de validacion -->
+        <p class="aviso" th:if="${#fields.hasErrors('*')}" th:text="#{editor.revisa}">Revisa los campos indicados</p>
+        <!-- Errores generales (por ejemplo, limite superado) -->
+        <p class="error" th:each="e : ${#fields.globalErrors()}" th:text="${e}">Error general</p>
+
+        <section>
+            <h2 th:text="#{editor.datos-personales}">Datos personales</h2>
+
+            <div class="campo-form">
+                <label for="nombre" th:text="#{editor.nombre} + ' *'">Nombre completo *</label>
+                <input id="nombre" type="text" th:field="*{nombre}">
+                <span class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Error</span>
+            </div>
+            <div class="campo-form">
+                <label for="titular" th:text="#{editor.titular} + ' *'">Titular profesional *</label>
+                <input id="titular" type="text" th:field="*{titular}">
+                <span class="error" th:if="${#fields.hasErrors('titular')}" th:errors="*{titular}">Error</span>
+            </div>
+            <div class="campo-form">
+                <label for="presentacion" th:text="#{editor.presentacion} + ' *'">Presentacion *</label>
+                <textarea id="presentacion" rows="4" th:field="*{presentacion}"></textarea>
+                <span class="error" th:if="${#fields.hasErrors('presentacion')}" th:errors="*{presentacion}">Error</span>
+            </div>
+            <div class="campo-form">
+                <label for="ciudad" th:text="#{editor.ciudad}">Ciudad</label>
+                <input id="ciudad" type="text" th:field="*{ciudad}">
+            </div>
+            <div class="campo-form">
+                <label for="email" th:text="#{editor.email}">Correo electronico</label>
+                <input id="email" type="text" th:field="*{email}">
+                <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</span>
+            </div>
+        </section>
+
+        <section>
+            <h2 th:text="#{editor.proyectos}">Proyectos</h2>
+            <p th:text="#{editor.contador(${form.proyectos.size()}, ${maximo})}">Proyectos: 1 de 5 permitidos</p>
+
+            <!-- Una fila por proyecto del objeto de formulario -->
+            <div class="fila-proyecto" th:each="p, fila : *{proyectos}">
+                <h3 th:text="#{editor.proyecto(${fila.count})}">Proyecto 1</h3>
+
+                <div class="campo-form">
+                    <label th:for="|proyectos${fila.index}.titulo|" th:text="#{editor.p.titulo} + ' *'">Titulo *</label>
+                    <input type="text" th:field="*{proyectos[__${fila.index}__].titulo}">
+                    <span class="error" th:if="${#fields.hasErrors('proyectos[__${fila.index}__].titulo')}"
+                          th:errors="*{proyectos[__${fila.index}__].titulo}">Error</span>
+                </div>
+                <div class="campo-form">
+                    <label th:for="|proyectos${fila.index}.anio|" th:text="#{editor.p.anio} + ' *'">Anno *</label>
+                    <input type="text" th:field="*{proyectos[__${fila.index}__].anio}">
+                    <span class="error" th:if="${#fields.hasErrors('proyectos[__${fila.index}__].anio')}"
+                          th:errors="*{proyectos[__${fila.index}__].anio}">Error</span>
+                </div>
+                <div class="campo-form">
+                    <label th:for="|proyectos${fila.index}.categoria|" th:text="#{editor.p.categoria} + ' *'">Categoria *</label>
+                    <select th:field="*{proyectos[__${fila.index}__].categoria}">
+                        <option value="" th:text="#{editor.elegir}">Elige una opcion</option>
+                        <option th:each="c : ${categorias}" th:value="${c.name()}" th:text="#{${c.clave()}}">Aplicaciones</option>
+                    </select>
+                    <span class="error" th:if="${#fields.hasErrors('proyectos[__${fila.index}__].categoria')}"
+                          th:errors="*{proyectos[__${fila.index}__].categoria}">Error</span>
+                </div>
+                <div class="campo-form">
+                    <label th:for="|proyectos${fila.index}.estado|" th:text="#{editor.p.estado} + ' *'">Estado *</label>
+                    <select th:field="*{proyectos[__${fila.index}__].estado}">
+                        <option value="" th:text="#{editor.elegir}">Elige una opcion</option>
+                        <option th:each="s : ${estados}" th:value="${s.name()}" th:text="#{${s.clave()}}">En curso</option>
+                    </select>
+                    <span class="error" th:if="${#fields.hasErrors('proyectos[__${fila.index}__].estado')}"
+                          th:errors="*{proyectos[__${fila.index}__].estado}">Error</span>
+                </div>
+                <div class="campo-form">
+                    <label th:for="|proyectos${fila.index}.descripcion|" th:text="#{editor.p.descripcion} + ' *'">Descripcion *</label>
+                    <textarea rows="3" th:field="*{proyectos[__${fila.index}__].descripcion}"></textarea>
+                    <span class="error" th:if="${#fields.hasErrors('proyectos[__${fila.index}__].descripcion')}"
+                          th:errors="*{proyectos[__${fila.index}__].descripcion}">Error</span>
+                </div>
+
+                <!-- Envia el indice de la fila a quitar -->
+                <button type="submit" class="boton-secundario" name="quitar" th:value="${fila.index}"
+                        th:text="#{editor.quitar}">Quitar este proyecto</button>
+            </div>
+
+            <div class="acciones">
+                <!-- Al llegar al maximo se oculta el boton y se muestra el aviso -->
+                <button type="submit" name="accion" value="anadir" th:if="${form.proyectos.size() < maximo}"
+                        th:text="#{editor.anadir}">Annadir proyecto</button>
+                <span class="aviso-limite" th:unless="${form.proyectos.size() < maximo}"
+                      th:text="#{editor.limite}">Has alcanzado el limite de proyectos</span>
+            </div>
+        </section>
+
+        <button type="submit" name="accion" value="vista" th:text="#{editor.vista}">Generar vista previa</button>
+    </form>
+</main>
+</body>
+</html>

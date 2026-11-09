@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Cabecera comun: navegacion y cambio de idioma (enlaces ?lang=, sin JavaScript) -->
+<header th:fragment="cabecera" class="cabecera">
+    <nav>
+        <a th:href="@{/curriculum}" th:text="#{nav.curriculum}">Curriculum</a>
+        <a th:href="@{/portfolio}" th:text="#{nav.portfolio}">Portfolio</a>
+        <a th:href="@{/portfolio/editar}" th:text="#{nav.editor}">Editar portfolio</a>
+    </nav>
+    <div>
+        <span th:text="#{nav.idioma} + ':'">Idioma:</span>
+        <a href="?lang=es" hreflang="es" lang="es">ES</a> |
+        <a href="?lang=en" hreflang="en" lang="en">EN</a>
+    </div>
+</header>
+</body>
+</html>

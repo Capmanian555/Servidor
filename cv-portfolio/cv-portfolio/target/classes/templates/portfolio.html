@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{portfolio.titulo}">Portfolio</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+<header th:replace="~{fragments :: cabecera}"></header>
+
+<main class="pagina">
+    <h1 th:text="#{portfolio.titulo}">Portfolio</h1>
+
+    <!-- Filtro: formulario GET; el servidor filtra y vuelve a generar la pagina -->
+    <section>
+        <form class="filtro" method="get" th:action="@{/portfolio}">
+            <div class="campo">
+                <label for="categoria" th:text="#{portfolio.filtro.categoria}">Categoria</label>
+                <select id="categoria" name="categoria">
+                    <option value="TODAS" th:selected="${categoriaSel == 'TODAS'}" th:text="#{portfolio.filtro.todas}">Todas</option>
+                    <option th:each="c : ${categorias}" th:value="${c.name()}"
+                            th:selected="${c.name() == categoriaSel}" th:text="#{${c.clave()}}">Aplicaciones</option>
+                </select>
+            </div>
+            <div class="campo">
+                <label for="anio" th:text="#{portfolio.filtro.anio}">Anno</label>
+                <input id="anio" name="anio" type="number" th:value="${anioSel}">
+            </div>
+            <button type="submit" th:text="#{portfolio.filtrar}">Filtrar</button>
+            <a class="boton boton-secundario" th:href="@{/portfolio}" th:text="#{portfolio.mostrar-todos}">Mostrar todos</a>
+        </form>
+        <p class="error" th:if="${anioInvalido}" th:text="#{portfolio.anio-invalido}">Introduce un anno valido</p>
+    </section>
+
+    <p th:text="#{portfolio.resultados(${total})}">Proyectos encontrados: 0</p>
+    <p th:if="${total == 0}" th:text="#{portfolio.sin-resultados}">No se encontraron proyectos</p>
+
+    <div class="rejilla">
+        <article class="tarjeta" th:each="p : ${proyectos}">
+            <!-- Sin imagen no se genera el elemento img -->
+            <img th:if="${p.imagen() != null}" th:src="@{${p.imagen()}}" th:alt="#{${p.imagenAltKey()}}" alt="Imagen del proyecto">
+            <div class="cuerpo">
+                <h3 th:text="#{${p.tituloKey()}}">Titulo</h3>
+                <div class="meta">
+                    <span th:text="#{${p.categoria().clave()}}">Categoria</span> ·
+                    <span th:text="${p.anio()}">2026</span>
+                </div>
+                <!-- Etiqueta verde (En curso) o gris (Terminado) -->
+                <p th:switch="${p.estado().name()}">
+                    <span th:case="'EN_CURSO'" class="etiqueta etiqueta-verde" th:text="#{estado.EN_CURSO}">En curso</span>
+                    <span th:case="'TERMINADO'" class="etiqueta etiqueta-gris" th:text="#{estado.TERMINADO}">Terminado</span>
+                </p>
+                <p th:text="#{${p.descripcionKey()}}">Descripcion</p>
+                <!-- Sin tecnologias se oculta el apartado -->
+                <div th:if="${p.tecnologias().length > 0}">
+                    <strong th:text="#{portfolio.tecnologias}">Tecnologias</strong><br>
+                    <span class="tecnologia" th:each="t : ${p.tecnologias()}" th:text="${t}">Java</span>
+                </div>
+                <!-- Sin enlace no se muestra ningun enlace vacio -->
+                <p th:if="${!#strings.isEmpty(p.enlace())}">
+                    <a th:href="${p.enlace()}" th:text="#{portfolio.ver-proyecto}">Ver proyecto</a>
+                </p>
+            </div>
+        </article>
+    </div>
+</main>
+</body>
+</html>

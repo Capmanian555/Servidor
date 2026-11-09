@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{vista.titulo}">Vista previa</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+<header th:replace="~{fragments :: cabecera}"></header>
+
+<main class="pagina">
+    <p class="consejo no-imprimir" th:text="#{vista.titulo}">Vista previa</p>
+
+    <!-- Solo se muestran los datos que se han introducido -->
+    <section>
+        <h1 th:if="${!#strings.isEmpty(form.nombre)}" th:text="${form.nombre}">Nombre</h1>
+        <p class="titular" th:if="${!#strings.isEmpty(form.titular)}" th:text="${form.titular}">Titular</p>
+        <p class="presentacion" th:if="${!#strings.isEmpty(form.presentacion)}" th:text="${form.presentacion}">Presentacion</p>
+        <p th:if="${!#strings.isEmpty(form.ciudad)}" th:text="${form.ciudad}">Ciudad</p>
+        <p th:if="${!#strings.isEmpty(form.email)}">
+            <a th:href="'mailto:' + ${form.email}" th:text="${form.email}">correo</a>
+        </p>
+    </section>
+
+    <section>
+        <h2 th:text="#{vista.proyectos}">Proyectos</h2>
+        <p th:if="${form.proyectos.isEmpty()}" th:text="#{vista.sin-proyectos}">Todavia no hay proyectos en este portfolio</p>
+
+        <div class="rejilla">
+            <article class="tarjeta" th:each="p : ${form.proyectos}">
+                <div class="cuerpo">
+                    <h3 th:text="${p.titulo}">Titulo</h3>
+                    <div class="meta">
+                        <span th:text="#{${'categoria.' + p.categoria}}">Categoria</span> ·
+                        <span th:text="${p.anio}">2026</span>
+                    </div>
+                    <p th:switch="${p.estado}">
+                        <span th:case="'EN_CURSO'" class="etiqueta etiqueta-verde" th:text="#{estado.EN_CURSO}">En curso</span>
+                        <span th:case="'TERMINADO'" class="etiqueta etiqueta-gris" th:text="#{estado.TERMINADO}">Terminado</span>
+                    </p>
+                    <p th:text="${p.descripcion}">Descripcion</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Volver a editar: reenvia los datos con campos ocultos (HTML normal, sin JavaScript) -->
+    <form class="no-imprimir" method="post" th:action="@{/portfolio/editar}">
+        <input type="hidden" name="accion" value="editar">
+        <input type="hidden" name="nombre" th:value="${form.nombre}">
+        <input type="hidden" name="titular" th:value="${form.titular}">
+        <input type="hidden" name="presentacion" th:value="${form.presentacion}">
+        <input type="hidden" name="ciudad" th:value="${form.ciudad}">
+        <input type="hidden" name="email" th:value="${form.email}">
+        <th:block th:each="p, fila : ${form.proyectos}">
+            <input type="hidden" th:name="|proyectos[${fila.index}].titulo|" th:value="${p.titulo}">
+            <input type="hidden" th:name="|proyectos[${fila.index}].anio|" th:value="${p.anio}">
+            <input type="hidden" th:name="|proyectos[${fila.index}].categoria|" th:value="${p.categoria}">
+            <input type="hidden" th:name="|proyectos[${fila.index}].estado|" th:value="${p.estado}">
+            <input type="hidden" th:name="|proyectos[${fila.index}].descripcion|" th:value="${p.descripcion}">
+        </th:block>
+        <button type="submit" th:text="#{vista.volver}">Volver a editar</button>
+    </form>
+</main>
+</body>
+</html>
